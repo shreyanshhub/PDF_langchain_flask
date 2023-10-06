@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ask Your PDF</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Token submission form */
+        .token-form {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .token-form label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+
+        .token-form input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+        .token-form input[type="submit"] {
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 18px;
+        }
+
+        /* Chat box and input form */
+        .chat-box {
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            min-height: 150px;
+        }
+
+        .message {
+            margin: 10px 0;
+        }
+
+        .user-message {
+            background-color: #3498db;
+            color: #fff;
+            border-radius: 15px 15px 0 15px;
+            padding: 10px 20px;
+            margin-left: 20px;
+            display: inline-block;
+            clear: both;
+            max-width: 70%;
+            word-wrap: break-word;
+        }
+
+        .bot-message {
+            background-color: #27ae60;
+            color: #fff;
+            border-radius: 15px 15px 15px 0;
+            padding: 10px 20px;
+            margin-right: 20px;
+            display: inline-block;
+            clear: both;
+            max-width: 70%;
+            word-wrap: break-word;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-input-label {
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+        input[type="submit"] {
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ask Your PDF</h1>
+
+        {% if not session.api_token %}
+            <!-- Token submission form with message about obtaining API tokens -->
+            <div class="token-form">
+                <p>Get your Hugging Face Hub API Token from <a href="https://huggingface.co/settings/tokens" target="_blank">https://huggingface.co/settings/tokens</a></p>
+                <form action="/set_token" method="post">
+                    <label for="api_token">Enter your Hugging Face Hub API Token:</label>
+                    <input type="text" name="api_token" id="api_token" required>
+                    <br><br>
+                    <input type="submit" value="Submit Token">
+                </form>
+            </div>
+        {% endif %}
+
+        <div class="chat-box">
+            {% if response %}
+                <div class="bot-message message">
+                    <p>{{ response }}</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Chat input form -->
+        {% if session.api_token %}
+            <form action="/upload" method="post" enctype="multipart/form-data">
+                <label for="pdf_file">Upload your PDF:</label>
+                <label class="file-input-label" for="pdf_file">Choose File</label>
+                <input type="file" name="pdf_file" id="pdf_file" accept=".pdf" required>
+                <br><br>
+
+                <label for="user_question">Ask a question about your PDF:</label>
+                <input type="text" name="user_question" id="user_question" required>
+                <br><br>
+
+                <input type="submit" value="Ask">
+            </form>
+        {% endif %}
+    </div>
+</body>
+</html>
